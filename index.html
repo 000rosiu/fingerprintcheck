@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>000rWeb - Fingerprint Checkup</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+<body>
+<div class="container-fluid py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-xl-10">
+      <div class="main-container p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div class="text-center flex-grow-1">
+            <h1 class="display-5 text-primary">
+              <i class="fas fa-shield-alt me-3"></i>Fingerprint Checkup
+            </h1>
+            <p class="lead">Check what information your browser reveals</p>
+          </div>
+          <div class="theme-switcher">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" role="switch" id="themeSwitch">
+              <label class="form-check-label" for="themeSwitch">
+                <i class="fas fa-sun" id="theme-icon"></i>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- IP  Section -->
+        <div class="ip-display">
+          <h2 class="mb-3">
+            <i class="fas fa-globe me-3"></i>Your IP Address
+          </h2>
+          <h3 id="ip-address" class="fw-bold">
+            <div class="loading-spinner"></div> Loading...
+          </h3>
+          <div id="ip-details" class="mt-3"></div>
+          <div id="ip-extended" class="mt-3"></div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-tabs mb-4" id="testTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="javascript-tab" data-bs-toggle="tab" data-bs-target="#javascript" type="button">JavaScript</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="webrtc-tab" data-bs-toggle="tab" data-bs-target="#webrtc" type="button">WebRTC</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="canvas-tab" data-bs-toggle="tab" data-bs-target="#canvas" type="button">Canvas</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="webgl-tab" data-bs-toggle="tab" data-bs-target="#webgl" type="button">WebGL</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="fonts-tab" data-bs-toggle="tab" data-bs-target="#fonts" type="button">Fonts</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="ssl-tab" data-bs-toggle="tab" data-bs-target="#ssl" type="button">SSL/TLS</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="dns-tab" data-bs-toggle="tab" data-bs-target="#dns" type="button">DNS</button>
+          </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="testTabsContent">
+          <!-- JavaScript Tab -->
+          <div class="tab-pane fade show active" id="javascript" role="tabpanel">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="test-card">
+                  <div class="card-header">
+                    <h5><i class="fab fa-js-square me-2"></i>Browser Information</h5>
+                  </div>
+                  <div id="browser-details"></div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="test-card">
+                  <div class="card-header">
+                    <h5><i class="fas fa-desktop me-2"></i>System Information</h5>
+                  </div>
+                  <div id="system-details"></div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="test-card">
+                  <div class="card-header">
+                    <h5><i class="fas fa-tv me-2"></i>Screen & Display</h5>
+                  </div>
+                  <div id="screen-details"></div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="test-card">
+                  <div class="card-header">
+                    <h5><i class="fas fa-plug me-2"></i>Plugins & Extensions</h5>
+                  </div>
+                  <div id="plugins-details"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- WebRTC Tab -->
+          <div class="tab-pane fade" id="webrtc" role="tabpanel">
+            <div class="test-card">
+              <div class="card-header">
+                <h5><i class="fas fa-video me-2"></i>WebRTC Leak Test</h5>
+              </div>
+              <div class="alert alert-custom mb-3">
+                <strong>Warning:</strong> WebRTC can reveal your real IP address even when using VPN.
+              </div>
+              <button class="test-button" onclick="testWebRTC()">
+                <i class="fas fa-play me-2"></i>Start WebRTC Test
+              </button>
+              <div id="webrtc-results" class="test-result mt-3" style="display: none;"></div>
+            </div>
+          </div>
+
+          <!-- Canvas Tab -->
+          <div class="tab-pane fade" id="canvas" role="tabpanel">
+            <div class="test-card">
+              <div class="card-header">
+                <h5><i class="fas fa-paint-brush me-2"></i>Canvas Fingerprinting</h5>
+              </div>
+              <div class="text-center">
+                <canvas id="canvas-test" class="fingerprint-canvas" width="400" height="200"></canvas>
+                <div class="mt-3">
+                  <button class="test-button" onclick="generateCanvasFingerprint()">
+                    <i class="fas fa-fingerprint me-2"></i>Generate Canvas Fingerprint
+                  </button>
+                </div>
+                <div id="canvas-results" class="test-result mt-3" style="display: none;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- WebGL Tab -->
+          <div class="tab-pane fade" id="webgl" role="tabpanel">
+            <div class="test-card">
+              <div class="card-header">
+                <h5><i class="fas fa-cube me-2"></i>WebGL Fingerprinting</h5>
+              </div>
+              <button class="test-button" onclick="testWebGL()">
+                <i class="fas fa-play me-2"></i>Start WebGL Test
+              </button>
+              <div id="webgl-results" class="test-result mt-3" style="display: none;"></div>
+            </div>
+          </div>
+
+          <!-- Fonts Tab -->
+          <div class="tab-pane fade" id="fonts" role="tabpanel">
+            <div class="test-card">
+              <div class="card-header">
+                <h5><i class="fas fa-font me-2"></i>Font Fingerprinting</h5>
+              </div>
+              <div class="alert alert-custom mb-3">
+                This test detects installed system fonts that can be used for identification.
+              </div>
+              <button class="test-button" onclick="testFonts()">
+                <i class="fas fa-search me-2"></i>Scan Fonts
+              </button>
+              <div class="mt-3">
+                <div class="progress" style="display: none;" id="font-progress">
+                  <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                </div>
+              </div>
+              <div id="fonts-results" class="test-result mt-3" style="display: none;"></div>
+            </div>
+          </div>
+
+          <!-- SSL/TLS Tab -->
+          <div class="tab-pane fade" id="ssl" role="tabpanel">
+            <div class="test-card">
+              <div class="card-header">
+                <h5><i class="fas fa-lock me-2"></i>SSL/TLS Configuration</h5>
+              </div>
+              <button class="test-button" onclick="testSSL()">
+                <i class="fas fa-shield-alt me-2"></i>Check SSL/TLS Configuration
+              </button>
+              <div id="ssl-results" class="test-result mt-3" style="display: none;"></div>
+            </div>
+          </div>
+
+          <!-- DNS Tab -->
+          <div class="tab-pane fade" id="dns" role="tabpanel">
+            <div class="test-card">
+              <div class="card-header">
+                <h5><i class="fas fa-server me-2"></i>DNS Leak Test</h5>
+              </div>
+              <div class="alert alert-custom mb-3">
+                This test checks if your DNS queries are properly routed through VPN.
+              </div>
+              <button class="test-button" onclick="testDNS()">
+                <i class="fas fa-search me-2"></i>Start DNS Test
+              </button>
+              <div id="dns-results" class="test-result mt-3" style="display: none;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="test-card mt-4">
+          <div class="card-header">
+            <h5><i class="fas fa-chart-pie me-2"></i>Privacy Summary</h5>
+          </div>
+          <div id="privacy-summary">
+            <div class="row text-center">
+              <div class="col-md-3">
+                <div class="p-3">
+                  <div class="leak-indicator leak-safe"></div>
+                  <span>Safe: <span id="safe-count">0</span></span>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="p-3">
+                  <div class="leak-indicator leak-warning"></div>
+                  <span>Warnings: <span id="warning-count">0</span></span>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="p-3">
+                  <div class="leak-indicator leak-danger"></div>
+                  <span>Threats: <span id="danger-count">0</span></span>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="p-3">
+                  <strong>Score: <span id="overall-score" class="status-info">-</span></strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
